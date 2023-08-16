@@ -1,0 +1,31 @@
+version: "3.1"
+
+services:
+  db:
+    container_name: CON-DB
+    image: mysql:5.7
+    platform: linux/x86_64
+    restart: always
+    environment:
+      MYSQL_DATABASE: DBNAME
+      MYSQL_USER: DBUSER
+      MYSQL_PASSWORD: DBPASSWORD
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - ./VOL_DB:/var/lib/mysql
+
+  wordpress:
+    container_name: CON-WP
+    build: ./wordpress-image
+    restart: always
+    ports:
+      - 80:80
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: DBUSER
+      WORDPRESS_DB_PASSWORD: DBPASSWORD
+      WORDPRESS_DB_NAME: DBNAME
+    depends_on:
+      - db
+    volumes:
+      - ./VOL_WP:/var/www/html
